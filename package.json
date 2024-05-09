@@ -1,5 +1,5 @@
 {
-  "name": "node-rest-api",
+  "name": "node-rest-api-mdb",
   "type": "module",
   "scripts": {
     "start": "node ./app.js",
