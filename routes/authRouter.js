@@ -5,7 +5,7 @@ import {
   register,
   login,
   //   getCurrent,
-  //   logout,
+  logout,
 } from "../controllers/authControllers.js";
 
 import authenticate from "../helpers/authenticate.js";
@@ -15,6 +15,6 @@ const authRouter = express.Router();
 authRouter.post("/register", validateBody(authSchema), register);
 authRouter.post("/login", validateBody(authSchema), login);
 // authRouter.get("/current", authenticate, getCurrent);
-// authRouter.post("/logout", authenticate, logout);
+authRouter.post("/logout", authenticate, logout);
 
 export default authRouter;

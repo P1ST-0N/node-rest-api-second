@@ -1,4 +1,4 @@
-import HttpError from "../helpers/HttpError.js";
+import HttpError from "./HttpError.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import dotenv from "dotenv";
