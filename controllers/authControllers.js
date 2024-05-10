@@ -25,3 +25,28 @@ export const register = async (req, res, next) => {
     next(error);
   }
 };
+
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw HttpError(401, "Email or password is wrong");
+    }
+    const passwordCompare = await bcrypt.compare(password, user.password);
+
+    if (!passwordCompare) {
+      throw HttpError(401, "Email or password is wrong");
+    }
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "22h" });
+    await User.findByIdAndUpdate(user._id, { token });
+
+    res.json({
+      token,
+      user: { subscription: user.subscription, email: user.email },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
