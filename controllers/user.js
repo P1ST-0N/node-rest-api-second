@@ -4,6 +4,8 @@ import fs from "node:fs/promises";
 import jimp from "jimp";
 import HttpError from "../helpers/HttpError.js";
 
+const avatarDir = path.resolve("public/avatars");
+
 export const updateAvatar = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -13,7 +15,7 @@ export const updateAvatar = async (req, res, next) => {
     const { _id } = req.user;
     const { path: tempUpload, originalname } = req.file;
     const filename = `${_id}_${originalname}`;
-    const resultUpload = path.resolve("public/avatar", filename);
+    const resultUpload = path.resolve(avatarDir, filename);
 
     const image = await jimp.read(tempUpload);
     await image.resize(250, 250).writeAsync(resultUpload);
