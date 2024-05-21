@@ -8,8 +8,10 @@ import {
   logout,
   subscriptionUpdate,
 } from "../controllers/authControllers.js";
+import { updateAvatar } from "../controllers/user.js";
 
 import authenticate from "../helpers/authenticate.js";
+import upload from "../helpers/upload.js";
 
 const authRouter = express.Router();
 
@@ -20,5 +22,12 @@ authRouter.post("/logout", authenticate, logout);
 authRouter.get("/current", authenticate, getCurrent);
 
 authRouter.patch("/", authenticate, subscriptionUpdate);
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  updateAvatar
+);
 
 export default authRouter;
