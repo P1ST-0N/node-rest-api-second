@@ -21,7 +21,7 @@ authRouter.post("/logout", authenticate, logout);
 
 authRouter.get("/current", authenticate, getCurrent);
 
-// authRouter.patch("/", authenticate, subscriptionUpdate);
+authRouter.patch("/", authenticate, subscriptionUpdate);
 
 authRouter.patch(
   "/avatars",
