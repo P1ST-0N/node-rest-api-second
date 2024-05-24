@@ -15,10 +15,29 @@ describe("login", () => {
 
   it("response has a status code 200", async () => {
     const res = await supertest(app).post("/users/login").send({
-      email: "qwe2@gmail.com",
+      email: "123@qwe.com",
       password: "123",
     });
 
     expect(res.statusCode).toBe(200);
+  });
+
+  it("response has a token", async () => {
+    const res = await supertest(app).post("/users/login").send({
+      email: "123@qwe.com",
+      password: "123",
+    });
+
+    expect(res.body.token).toBeDefined();
+  });
+
+  it("response has a user object with email and subscription fields type string", async () => {
+    const res = await supertest(app).post("/users/login").send({
+      email: "123@qwe.com",
+      password: "123",
+    });
+
+    expect(typeof res.body.user.email).toBe("string");
+    expect(typeof res.body.user.subscription).toBe("string");
   });
 });
