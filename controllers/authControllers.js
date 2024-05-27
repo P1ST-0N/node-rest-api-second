@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import gravatar from "gravatar";
+import crypto from "node:crypto";
 
 dotenv.config();
 
@@ -12,19 +13,25 @@ const { DB_SECRET } = process.env;
 export const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const emailToLowerCase = email.toLowerCase();
+    const user = await User.findOne({ email: emailToLowerCase });
     if (user) {
       throw HttpError(409, "Email is use");
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
+    const verificationToken = crypto.randomUUID();
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
       avatarURL,
+      verificationToken,
     });
+
+    //sendMail()
+
     res.status(201).json({
       user: { subscription: newUser.subscription, email: newUser.email },
     });
