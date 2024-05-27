@@ -29,5 +29,8 @@ authRouter.patch(
   upload.single("avatar"),
   updateAvatar
 );
+//need add verify middleware
+authRouter.get("/verify/:verificationToken");
+authRouter.post("verify");
 
 export default authRouter;
