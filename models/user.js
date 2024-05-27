@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import handleMongooseError from "../helpers/handleMongooseError.js";
-import { required } from "joi";
 
 const userSchema = new Schema(
   {
