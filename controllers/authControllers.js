@@ -7,7 +7,7 @@ import gravatar from "gravatar";
 
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
+const { DB_SECRET } = process.env;
 
 export const register = async (req, res, next) => {
   try {
@@ -46,7 +46,7 @@ export const login = async (req, res, next) => {
       throw HttpError(401, "Email or password is wrong");
     }
     const payload = { id: user._id };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "22h" });
+    const token = jwt.sign(payload, DB_SECRET, { expiresIn: "22h" });
     await User.findByIdAndUpdate(user._id, { token });
 
     res.json({
