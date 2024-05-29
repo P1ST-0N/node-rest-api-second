@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import gravatar from "gravatar";
 import crypto from "node:crypto";
+import { sendMail } from "../mail.js";
 
 dotenv.config();
 
@@ -30,7 +31,13 @@ export const register = async (req, res, next) => {
       verificationToken,
     });
 
-    //sendMail()
+    sendMail({
+      to: emailToLowerCase,
+      from: "luckylionya@rambler.ru",
+      subject: "Welcome to Phonebook",
+      html: `To confirm your email please go to this <a href="http://localhost:3000/users/verify/${verificationToken}">link</a>`,
+      text: `To confirm your email please open  http://localhost:3000/users/verify/${verificationToken}`,
+    });
 
     res.status(201).json({
       user: { subscription: newUser.subscription, email: newUser.email },
