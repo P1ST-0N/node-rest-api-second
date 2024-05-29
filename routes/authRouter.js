@@ -8,7 +8,7 @@ import {
   logout,
   subscriptionUpdate,
 } from "../controllers/authControllers.js";
-import { updateAvatar } from "../controllers/user.js";
+import { updateAvatar, verify } from "../controllers/user.js";
 
 import authenticate from "../helpers/authenticate.js";
 import upload from "../helpers/upload.js";
@@ -30,7 +30,7 @@ authRouter.patch(
   updateAvatar
 );
 //need add verify middleware
-authRouter.get("/verify/:verificationToken");
-authRouter.post("verify");
+authRouter.get("/verify/:verificationToken", verify);
+authRouter.post("verify", validateBody());
 
 export default authRouter;
