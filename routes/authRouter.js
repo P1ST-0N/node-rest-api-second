@@ -12,6 +12,7 @@ import { updateAvatar, verify } from "../controllers/user.js";
 
 import authenticate from "../helpers/authenticate.js";
 import upload from "../helpers/upload.js";
+import { emailSchema } from "../schemas/emailSchema.js";
 
 const authRouter = express.Router();
 
@@ -31,6 +32,6 @@ authRouter.patch(
 );
 //need add verify middleware
 authRouter.get("/verify/:verificationToken", verify);
-authRouter.post("verify", validateBody());
+authRouter.post("verify", validateBody(emailSchema));
 
 export default authRouter;
