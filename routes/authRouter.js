@@ -32,6 +32,6 @@ authRouter.patch(
 );
 //need add verify middleware
 authRouter.get("/verify/:verificationToken", verify);
-authRouter.post("verify", validateBody(emailSchema));
+authRouter.post("verify", validateBody(emailSchema)); //resendingVerifyEmail
 
 export default authRouter;
