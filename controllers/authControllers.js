@@ -4,27 +4,41 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import gravatar from "gravatar";
+import crypto from "node:crypto";
+import { sendMail } from "../mail.js";
 
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
+const { DB_SECRET } = process.env;
 
 export const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const emailToLowerCase = email.toLowerCase();
+    const user = await User.findOne({ email: emailToLowerCase });
     if (user) {
       throw HttpError(409, "Email is use");
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
+    const verificationToken = crypto.randomUUID();
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
       avatarURL,
+      verificationToken,
     });
+
+    sendMail({
+      to: emailToLowerCase,
+      from: "luckylionya@rambler.ru",
+      subject: "Welcome to Phonebook",
+      html: `To confirm your email please go to this <a href="http://localhost:3000/users/verify/${verificationToken}">link</a>`,
+      text: `To confirm your email please open  http://localhost:3000/users/verify/${verificationToken}`,
+    });
+
     res.status(201).json({
       user: { subscription: newUser.subscription, email: newUser.email },
     });
@@ -36,7 +50,10 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+
+    const emailToLowerCase = email.toLowerCase();
+    const user = await User.findOne({ email: emailToLowerCase });
+
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
     }
@@ -46,7 +63,12 @@ export const login = async (req, res, next) => {
       throw HttpError(401, "Email or password is wrong");
     }
     const payload = { id: user._id };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "22h" });
+
+    if (user.verify === false) {
+      throw HttpError(401, "Please verify your email");
+    }
+
+    const token = jwt.sign(payload, DB_SECRET, { expiresIn: "22h" });
     await User.findByIdAndUpdate(user._id, { token });
 
     res.json({

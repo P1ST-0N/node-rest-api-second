@@ -3,7 +3,7 @@ import app from "./app.js";
 import "dotenv/config";
 
 const uri = process.env.DB_HOST;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // run server
 (async () => {

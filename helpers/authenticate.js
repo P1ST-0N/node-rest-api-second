@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
+const { DB_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
   const { authorization = "" } = req.headers;
@@ -16,7 +16,7 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const { id } = jwt.verify(token, SECRET_KEY);
+    const { id } = jwt.verify(token, DB_SECRET);
     const user = await User.findById(id);
     if (!user || !user.token || user.token !== token) {
       next(HttpError(401));
