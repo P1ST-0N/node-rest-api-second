@@ -8,7 +8,11 @@ import {
   logout,
   subscriptionUpdate,
 } from "../controllers/authControllers.js";
-import { updateAvatar, verify } from "../controllers/user.js";
+import {
+  resendingVerifyEmail,
+  updateAvatar,
+  verify,
+} from "../controllers/user.js";
 
 import authenticate from "../helpers/authenticate.js";
 import upload from "../helpers/upload.js";
@@ -30,8 +34,8 @@ authRouter.patch(
   upload.single("avatar"),
   updateAvatar
 );
-//need add verify middleware
+
 authRouter.get("/verify/:verificationToken", verify);
-authRouter.post("verify", validateBody(emailSchema)); //resendingVerifyEmail
+authRouter.post("verify", validateBody(emailSchema), resendingVerifyEmail);
 
 export default authRouter;

@@ -3,6 +3,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import jimp from "jimp";
 import HttpError from "../helpers/HttpError.js";
+import { sendMail } from "../mail.js";
 
 const avatarDir = path.resolve("public/avatars");
 
@@ -43,6 +44,32 @@ export const verify = async (req, res, next) => {
     }
 
     res.status(200).json({ message: "Verification successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resendingVerifyEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw HttpError(400, "Missing required field email");
+    }
+    if (user.verify) {
+      throw HttpError(400, "Verification has already been passed");
+    }
+
+    await sendMail({
+      to: emailToLowerCase,
+      from: "luckylionya@rambler.ru",
+      subject: "Welcome to Phonebook",
+      html: `To confirm your email please go to this <a href="http://localhost:3000/users/verify/${user.verificationToken}">link</a>`,
+      text: `To confirm your email please open  http://localhost:3000/users/verify/${user.verificationToken}`,
+    });
+
+    res.json({ message: "Verification email sent" });
   } catch (error) {
     next(error);
   }
