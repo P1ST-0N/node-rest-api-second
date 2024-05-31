@@ -36,6 +36,6 @@ authRouter.patch(
 );
 
 authRouter.get("/verify/:verificationToken", verify);
-authRouter.post("verify", validateBody(emailSchema), resendingVerifyEmail);
+authRouter.post("/verify", validateBody(emailSchema), resendingVerifyEmail);
 
 export default authRouter;

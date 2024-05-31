@@ -62,7 +62,7 @@ export const resendingVerifyEmail = async (req, res, next) => {
     }
 
     await sendMail({
-      to: emailToLowerCase,
+      to: email.toLowerCase(),
       from: "luckylionya@rambler.ru",
       subject: "Welcome to Phonebook",
       html: `To confirm your email please go to this <a href="http://localhost:3000/users/verify/${user.verificationToken}">link</a>`,
